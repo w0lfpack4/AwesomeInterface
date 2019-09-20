@@ -1,0 +1,60 @@
+## APIVersion: 100028 100029
+## Version: 3.2
+## Title: |cFF6060Awesome |cffffffInterface|r
+## Author: |cFF6060Keg|r
+## Description: |cffa500UI tweaks such as compass supression, clock, durability, upgraded quest icons, auto-repair, xp tracking, quest navigation, reticle compass, and detailed targetting.|r
+## DependsOn: LibStub LibAddonMenu-2.0 LibGPS
+## OptionalDependsOn: QuestMap
+## SavedVariables: AI_SavedVariables
+
+## The core functions of the addon
+AwesomeInterface.lua
+
+## plugin for displaying time remaining on bounties
+bounty.lua
+
+## plugin for displaying active buffs
+buffs.lua
+
+## plugin for hiding chat during combat
+chat.lua
+
+## plugin for performance clock
+clock.lua
+
+## plugin for hiding the compass
+compass.lua
+
+## plugin for character sheet durability overlay
+durability.lua
+
+## plugin for placing navigation arrow and distance in the target reticle
+navigation.lua
+
+## plugin for hiding housing/dungeons/trials on the world and wayshrine maps
+pois.lua
+
+## plugin for changing quest icons
+quests.lua
+
+## plugin for auto-repairing armor
+repair.lua
+
+## plugin for placing compass directions in the target reticle
+reticle.lua
+
+## plugin for updating the target frame
+target.lua
+
+## plugin for always showing XP
+xp.lua
+
+## The settings menu
+settings.lua
+
+## binding definitions for reticle
+Bindings.xml
+
+## frame definitions for performance clock and reticle
+AwesomeInterface.xml
+

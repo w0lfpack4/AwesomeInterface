@@ -1,0 +1,11 @@
+<Bindings>
+    <Layer name="SI_KEYBINDINGS_CATEGORY_GENERAL">
+        <Category name="|cFF6060Awesome |cffffffInterface|r">
+            <Action name="AWESOME_INTERFACE_TOGGLE_NAVIGATION">
+                <Down>
+					AI.plugins.Navigation.ToggleQuestNavigation()
+				</Down>
+            </Action>
+        </Category>
+    </Layer>
+</Bindings>

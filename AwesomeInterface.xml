@@ -1,0 +1,145 @@
+<GuiXml>
+    <Controls>	
+		<!-- main control to allow update -->
+        <TopLevelControl name="AwesomeInterface" mouseEnabled="false" clampedToScreen="true"> 
+			<OnUpdate>
+                AI.OnUpdate()
+			</OnUpdate>
+			<Dimensions x="1" y="1" /> 
+		</TopLevelControl>
+
+		<!-- bounty label, tied in with bounty meters -->
+		<TopLevelControl name="AI_Bounty" hidden="false">
+			<Dimensions x="65" y="40" />
+			<Anchor point="RIGHT" relativeTo="ZO_HUDInfamyMeterBountyDisplay" relativePoint="LEFT" offsetX="-10" offsetY="0" />
+			<Controls>
+				<Label name="$(parent)Label" font="ZoFontWinT2" color="INTERFACE_COLOR_TYPE_TEXT_COLORS:INTERFACE_TEXT_COLOR_NORMAL" wrapMode="TRUNCATE" verticalAlignment="CENTER" horizontalAlignment="CENTER">
+					<AnchorFill />
+				</Label>
+			</Controls>
+		</TopLevelControl>
+
+		<!-- system clock, tied in with performance meters -->
+		<TopLevelControl name="AI_Clock" mouseEnabled="true" movable="false" clampedToScreen="true">
+			<Dimensions x="65" y="40" />
+			<ClampedToScreenInsets left="0" top="0" right="0" bottom="0" />
+			<Controls>
+				<Label name="$(parent)Label" font="ZoFontWinT2" color="INTERFACE_COLOR_TYPE_TEXT_COLORS:INTERFACE_TEXT_COLOR_NORMAL" wrapMode="TRUNCATE" verticalAlignment="CENTER" horizontalAlignment="CENTER">
+					<AnchorFill />
+				</Label>
+			</Controls>
+		</TopLevelControl>
+
+		<!-- adds compass directions to the reticle and changes color based on target -->
+		<TopLevelControl name="AI_Reticle" hidden="false">
+			<Dimensions x="50" y="20"/>
+			<Anchor point="CENTER" relativeTo="ZO_ReticleContainerReticle" offsetX="0" offsetY="0" />
+			<Controls>
+				<Label name="$(parent)UI" font="ZoFontGameSmall" text="" hidden="true" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS">
+					<AnchorFill />
+				</Label>
+			</Controls>
+		</TopLevelControl>
+
+		<!-- navigation control, adds a tomtom like arrow to direct to the next quest or waypoint -->
+		<TopLevelControl name="AI_Navigation" clampedToScreen="true" mouseEnabled="false" movable="false" hidden="true">
+			<Dimensions x="128" y="128" />
+			<Anchor point="CENTER" relativeTo="ZO_ReticleContainerReticle" relativePoint="CENTER"/>
+			<Controls>
+				<Texture name="$(parent)Texture">
+					<AnchorFill />
+				</Texture>
+				<Label name="$(parent)Distance" font="ZoFontGameSmall" text="" hidden="true" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS">
+					<Anchor point="CENTER" relativeTo="ZO_ReticleContainerReticle" offsetX="0" offsetY="65" />
+				</Label>
+			</Controls>
+		</TopLevelControl>
+
+		<!-- Compass description control, anchored to the top center of the ui -->
+		<TopLevelControl name="AI_Compass">
+			<Dimensions x="300" y="20"/>
+			<Anchor point="TOP" relativeTo="GuiRoot" offsetX="0" offsetY="10" />
+			<Controls>
+				<Label name="$(parent)Description" font="ZoFontGameShadow" text="" hidden="false" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS">
+					<AnchorFill />
+				</Label>
+			</Controls>
+		</TopLevelControl>
+
+		<!-- Buffs control, has BG and anchored to performance meters -->
+		<TopLevelControl name="AI_Buffs" clampedToScreen="true" hidden="true">
+			<ClampedToScreenInsets top="20" bottom="-20" left="20" right="-20"/>
+			<Dimensions x="70" y="70"/>
+			<Anchor point="TOPLEFT" relativeTo="ZO_PerformanceMeters" relativePoint="TOPRIGHT" offsetX="35"/>
+			<Controls>
+				<!--Backdrop name="$(parent)BG1" inherits="ZO_ThinBackdrop" alpha=".3" /-->
+				<Texture name="$(parent)BG" textureFile="EsoUI/Art/Performance/StatusMeterMunge.dds">
+					<Dimensions x="300" y="256"/>
+					<Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER"/>
+				</Texture>			
+			</Controls>
+		</TopLevelControl>
+
+			<!-- Buffs virtual button template -->
+			<Control name="AI_Buffs_Template" mouseEnabled="true" virtual="true">
+				<Dimensions x="40" y="70"/>
+				<!-- allow lua to interact with virtual control -->
+				<OnInitialized>
+					self.icon = self:GetNamedChild("Icon") 
+					self.time = self:GetNamedChild("Time")
+					self.backdrop = self:GetNamedChild("Backdrop")
+				</OnInitialized>
+				<!-- set tooltip -->
+				<OnMouseEnter>
+					InitializeTooltip(GameTooltip, self, BOTTOM, 0, -10)
+					if self.isArtificial then
+						local tooltipText = GetArtificialEffectTooltipText(self.effectId)
+						GameTooltip:AddLine(self.tooltipTitle, "", ZO_SELECTED_TEXT:UnpackRGBA())
+						GameTooltip:AddLine(tooltipText, "", ZO_NORMAL_TEXT:UnpackRGBA())
+					else
+						GameTooltip:SetBuff(self.buffSlot, "player")
+					end 
+					if (self.backdrop:GetAlpha() > 0) then
+						GameTooltip:AddLine("(Click to show)", "", ZO_NORMAL_TEXT:UnpackRGBA())
+					else
+						GameTooltip:AddLine("(Click to hide)", "", ZO_NORMAL_TEXT:UnpackRGBA())
+					end
+				</OnMouseEnter>
+				<!-- clear tooltip -->
+				<OnMouseExit>
+					ClearTooltip(GameTooltip)
+				</OnMouseExit>
+				<!-- click to hide or show buffs -->
+				<OnMouseUp>
+					if (AI.saved.character.Buffs.hide[self.displayName]) then
+						AI.saved.character.Buffs.hide[self.displayName] = false
+					else
+						AI.saved.character.Buffs.hide[self.displayName] = true
+					end
+					AI.plugins.Buffs.UpdateEffects()
+				</OnMouseUp>
+				<!-- button controls: backdrop, texture icon, label -->
+				<Controls>
+					<Backdrop name="$(parent)Backdrop" edgeColor="FF0000" centerColor="800000" alpha="0" >
+						<Dimensions x="32" y="32" />
+						<Anchor point="TOPLEFT"  relativeTo="$(parent)" relativePoint="TOPLEFT"/>
+						<Edge edgeSize="1" />
+					</Backdrop>
+					<Texture  name="$(parent)Icon">
+						<Dimensions x="30" y="30"/>
+						<Anchor point="TOPLEFT"  relativeTo="$(parent)" relativePoint="TOPLEFT" offsetX="1" offsetY="1"/>
+					</Texture>
+					<Label name="$(parent)Time" font="ZoFontWinT2" text="" hidden="false" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS">
+						<Anchor point="BOTTOM" relativeTo="$(parent)Icon" relativePoint="TOP"/>
+						<OnUpdate>
+							local timeLeft = self.endTime - GetFrameTimeSeconds() self:SetText(ZO_FormatTime(timeLeft, TIME_FORMAT_STYLE_SHOW_LARGEST_UNIT, TIME_FORMAT_PRECISION_TWELVE_HOUR))
+						</OnUpdate>
+					</Label>
+				</Controls>
+			</Control>
+
+			<!-- Buffs virtual button container -->
+			<Control name="AI_Buffs_Container" virtual="true" resizeToFitDescendents="true"/>	
+
+    </Controls>
+</GuiXml>
