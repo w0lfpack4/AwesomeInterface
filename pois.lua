@@ -69,7 +69,8 @@ AI.vars["POIS"] = {
 		[284] = true, -- Vvardenfell: Vivec City (v)
 		[355] = true, -- Summerset: Alinor (v)
 		[350] = true, -- Summerset: Shimmerene (v)
-		[382] = true, -- Elsweyr: Rimmen (v)
+		[382] = true, -- Northern Elsweyr: Rimmen (v)
+		[402] = true, -- Souther Elsweyr: Senchal (v)
 		[220] = true, -- Craglorn: Belkarth (v)
 
 		-- The Aurbis
